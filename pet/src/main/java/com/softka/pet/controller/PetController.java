@@ -5,9 +5,12 @@ import com.softka.pet.domain.service.PetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/clinica/pets")
@@ -34,7 +37,7 @@ public class PetController {
     }
 
     @PostMapping("/")
-    public Mono<PetModel> publicarMascota(@RequestBody PetModel pet) {
+    public Mono<PetModel> publicarMascota(@RequestBody @Valid PetModel pet) {
         return petService.postPet(pet).log();
     }
 
