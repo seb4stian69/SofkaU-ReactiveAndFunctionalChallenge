@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import java.util.Objects;
 
 @Service
 public class PetService {
@@ -59,11 +60,42 @@ public class PetService {
                 .defaultIfEmpty(new ResponseEntity<>(HttpStatus.OK));
 
     }
+    
+    public Mono<ResponseEntity<PetModel>> updatePetComplete(String id,PetModel pet){
+
+        return petRepository.findById(id)
+
+                .flatMap(petFind->{
+
+                    petFind.setNamePet(pet.getNamePet());
+                    petFind.setParentsName(pet.getParentsName());
+                    petFind.setType(pet.getType());
+                    petFind.setRace(pet.getRace());
+                    petFind.setAge(pet.getAge());
+                    petFind.setCharacteristicsPet(pet.getCharacteristicsPet());
+                    petFind.setPhone(pet.getPhone());
+                    petFind.setAdress(pet.getAdress());
+                    petFind.setState(pet.getState());
+
+                    return petRepository.save(petFind);
+
+                })
+                .map(updatedBook -> ResponseEntity.ok().<PetModel>build() )
+                .defaultIfEmpty(new ResponseEntity<>(HttpStatus.OK));
+
+    }
 
     public Mono<PetModel> deletePet(String id){
-        return petRepository.findById(id)
-                .flatMap(petfind -> petRepository.delete(petfind)
-                        .then(Mono.just(petfind)));
+
+        if(Objects.isNull(id)){
+            return Mono.empty();
+        }
+
+        return petRepository.findById(id).flatMap(petFind ->{
+            petFind.setState(1); // 1 significa que se borro
+            return petRepository.save(petFind);
+        });
+
     }
 
 }
