@@ -46,11 +46,17 @@ public class PetController {
         return petService.updatePet(id, pet);
     }
 
+
+    @PutMapping("/updateComplete/{id}")
+    public Mono<ResponseEntity<PetModel>> actualizarMascotaCompleta(@PathVariable String id, @RequestBody @Valid PetModel pet){
+        return petService.updatePetComplete(id,pet);
+    }
+
     @DeleteMapping("/{id}")
     public Mono<ResponseEntity<Void>> eliminarMascota(@PathVariable String id){
         return petService.deletePet(id)
                 .map( r -> ResponseEntity.ok().<Void>build())
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
-
+    
 }
